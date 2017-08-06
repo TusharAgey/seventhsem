@@ -21,7 +21,7 @@ public class Server
 
             int port = 25000;
             ServerSocket serverSocket = new ServerSocket(port);
-            System.out.println("Server Started and listening to the port 25000");
+            System.out.println("Server listening to the port 25000");
 
             //Server is running always. This is done using this while(true) loop
             while(true)
@@ -31,17 +31,22 @@ public class Server
                 InputStream is = socket.getInputStream();
                 InputStreamReader isr = new InputStreamReader(is);
                 BufferedReader br = new BufferedReader(isr);
-                String credentials = br.readLine();
-                Process p = Runtime.getRuntime().exec("echo \"" + credentials + "\" >> output && ./decrypt output");
-                p.waitFor();
-                String sendMessage = new Scanner(new File("final_data.txt")).nextLine();
+                //decryptng the credentials
+                char str[] = br.readLine().toCharArray();
+                for(int i = 0; i < str.length; i++){
+                    str[i] = ((char) ~str[i]);
+                }
+                StringBuilder sb = new StringBuilder();
+                sb.append(str);
+                sb = sb.reverse();
+                String sendMessage = sb.toString();
                 String returnMessage;
-                returnMessage = sendMessage;
+                //decryption done
                 if(sendMessage.contains("Tushar") && sendMessage.contains("qwerty")){
-                  returnMessage += " Authenticated\n";
+                  returnMessage = " Authenticated\n";
                 }
                 else
-                  returnMessage += " Authentication failed\n";
+                  returnMessage = " Authentication failed\n";
                 //Multiplying the number by 2 and forming the return message
 
                 //Sending the response back to the client.

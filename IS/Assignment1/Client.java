@@ -1,15 +1,8 @@
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.net.InetAddress;
-import java.net.Socket;
-import java.io.Console;
-import java.util.Scanner;
+import java.net.*;
+import java.util.*;
 import java.io.*;
 import java.nio.*;
+import java.lang.*;
 public class Client
 {
     private static Socket socket;
@@ -21,32 +14,41 @@ public class Client
             int port = 25000;
             InetAddress address = InetAddress.getByName(host);
             socket = new Socket(address, port);
+            //getting the credentials
             Scanner input = new Scanner(System.in);
-            System.out.println("Username:- ");
+            System.out.print("Username:- ");
             String username = input.nextLine();
-              Console console = System.console();
+            Console console = System.console();
             String password = new String(console.readPassword("Password:- "));
-            Process p = Runtime.getRuntime().exec("echo \"" + username + " " + password + "\" >> data && ./encrypt data");
-            p.waitFor();
+            //encryption logic
+            StringBuilder sb = new StringBuilder();
+            sb.append(username);
+            sb.append(" ");
+            sb.append(password);
+            sb = sb.reverse();
+            String output = sb.toString() + "\n";
+            char[] str = output.toCharArray();
+            for(int i = 0; i < str.length - 1; i++){
+                str[i] = ((char) ~str[i]);
+            }
+            //done encrypting
+ 
             //Send the message to the server
             OutputStream os = socket.getOutputStream();
             OutputStreamWriter osw = new OutputStreamWriter(os);
             BufferedWriter bw = new BufferedWriter(osw);
-
-            String sendMessage = new Scanner(new File("output.txt")).nextLine();
-            sendMessage = sendMessage + "\n";
-            bw.write(sendMessage);
+            bw.write(str);
             bw.flush();
             //Get the return message from the server
             InputStream is = socket.getInputStream();
             InputStreamReader isr = new InputStreamReader(is);
             BufferedReader br = new BufferedReader(isr);
             String message = br.readLine();
-            System.out.println("Message received from the server : " +message);
+            System.out.println("Server >  " +message);
         }
         catch (Exception exception)
         {
-            exception.printStackTrace();
+            System.out.println(exception.getMessage());
         }
         finally
         {
