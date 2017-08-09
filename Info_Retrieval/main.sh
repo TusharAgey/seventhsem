@@ -3,7 +3,7 @@ len=$(ls -p $1 | grep -v /  | wc -l) #$1 denotes the directory containing docume
 for(( i=1; i<=$len; i++ ))
 do
 	filen=$( ls -p $1 | grep -v /  | head -$i | tail -1 )
-	data=$( cat $filen );
+	data=$( cat $filen )
 	data=$( echo $data | sed "s/[^[a-z_A-Z]]*/ /g" ) #Remove punctuations, is are the they this that a an am etc
 	data=$( echo $data | sed "s/\[/ /g" )
 	data=$(echo -e " "$(echo $data)" ")
@@ -17,11 +17,20 @@ do
 	do
 		if [ $( cat "./input/stopword.txt" | grep -i $word | wc -c ) -eq 0 ]; #pick non-stopwords only
 		then
-			count=$(echo $after_stemming | grep -o "$word" | wc -l) #number of occurances
-			echo $after_stemming
+			count=$(echo -e " "$after_stemming" " | grep -o " $word " | wc -l) #number of occurances
 			statement=$(echo $filen' '$word' '$count )
 			echo $statement >> postfile #saving postfile
 		fi
 	done	
 done
-cat postfile | sort -f -u
+cat postfile | sort -f -u > postfile2
+rm postfile
+mv postfile2 postfile
+data=$(cat postfile | awk '{print $2}' | sort -f -u) #get all the unique list of words
+for word in $data;
+do
+	lines=$(cat postfile | grep $word)
+	#now lines is each line data
+	#now, for each such line, do processing
+	#That means, put generate the inverted index.
+done
