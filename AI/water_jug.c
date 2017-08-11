@@ -14,10 +14,14 @@ void solve(int d){ //d is the required ltr of water in either of the jug
 	printf("%dltr %dltr\n", m.jug_capacity, n.jug_capacity);
 	if(choice == 1)
 		while(m.jug_water != d && n.jug_water != d){
-			if(m.jug_water == m.jug_capacity)
+			if(m.jug_water == m.jug_capacity){
 				m.jug_water = 0;
-			if(n.jug_water == 0)
+				printf("small jug is full, empty it:\n");
+			}
+			if(n.jug_water == 0){
 				n.jug_water = n.jug_capacity;
+				printf("larger jug is empty, fill it:\n");
+			}
 			printf("| %d | %d |\n", m.jug_water, n.jug_water);
 			x = m.jug_capacity - m.jug_water;//free space in smaller jug
 			if(n.jug_water >= x){
@@ -28,27 +32,35 @@ void solve(int d){ //d is the required ltr of water in either of the jug
 				m.jug_water += n.jug_water; //pour everything remaining
 				n.jug_water -= n.jug_water;//hence removed
 			}
+			printf("pour from larger jug to smaller one:\n");
 			printf("| %d | %d |\n", m.jug_water, n.jug_water);
 		}
 	else{
 		while(m.jug_water != d && n.jug_water != d){
-			if(n.jug_water == n.jug_capacity)
+			if(n.jug_water == n.jug_capacity){
 				n.jug_water = 0;
-			if(m.jug_water == 0)
+				printf("larger jug is full, so empty it:\n");
+			}
+			if(m.jug_water == 0){
 				m.jug_water = m.jug_capacity;
+				printf("smaller jug is empty, so fill it:\n");
+			}
 			printf("| %d | %d |\n", m.jug_water, n.jug_water);
 			x = n.jug_capacity - n.jug_water;//free space in larger jug
 			if(m.jug_water >= x){
 				n.jug_water += x; //pour it to larger jug
 				m.jug_water -= x; //hence removed from smaller jug
+				
 			}
 			else{
 				n.jug_water += m.jug_water; //pour everything remaining
 				m.jug_water -= m.jug_water; //hence removed
 			}
+			printf("pour from smaller jug to larger one:\n");
 			printf("| %d | %d |\n", m.jug_water, n.jug_water);
 		}
 	}
+	printf("\nyay! got the final state.\n");
 }
 int gcd(int no1, int no2){
 	 if (no2 == 0)
