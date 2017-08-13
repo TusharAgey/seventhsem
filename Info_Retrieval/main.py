@@ -15,7 +15,6 @@ newest_words = []
 inverted_index = {}
 unique_word_list = []
 stopwords = open("./input/stopword.txt", "r").read().split()
-invert_index = open("./output/inverted_index.txt", "w")
 for file in files: #for each file do
 	for word in open(sys.argv[1]+'/'+file).read().translate(table).split(): #for each word
 		if word.lower() not in stopwords: #remove stopwords
