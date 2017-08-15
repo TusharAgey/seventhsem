@@ -10,22 +10,31 @@ canvas.width = canvasSize;
 canvas.height = canvasSize;
 context.translate(0.5, 0.5);
 var visited = [[0,0,0],[0,0,0],[0,0,0]]; //Master record of elements
-function getIndex(){
-
-}
-function nextMove(){
+function nextMove(){//The actual method that determines the next system move
 	var myvisited = [0,0,0,0,0,0,0,0,0];
 	var i = 0;
 	for (var x = 0;x < 3;x++) {
   	  for (var y = 0;y < 3;y++) {
   	  	myvisited[i] = visited[x][y];
+  	  	i++;
   	  }
   	}
-  	//do all the processing
+  	//do all the AI processing
 	//logic to choose next move
-	drawO(i * sectionSize, j * sectionSize);
+	//just find lok. and paint the box of x,y when i == lok
+	i = 0;
+outer:	for (x = 0; x < 3; x++) {
+  	  for (y = 0; y < 3; y++) {
+  	  	if(myvisited[i] == 0){
+  	  		visited[x][y] = 'x';
+  	  		break outer;
+  	  	}
+  	  	i++;
+  	  }
+  	}
+	drawX(x * sectionSize, y * sectionSize,);
 }
-function addPlayingPiece (mouse) {
+function addPlayingPiece (mouse) { //When user clicks an area, paint the area 
   var xCordinate;
   var yCordinate;
 
@@ -39,36 +48,14 @@ function addPlayingPiece (mouse) {
           mouse.y >= yCordinate && mouse.y <= yCordinate + sectionSize &&
           !visited[x][y]
         ) {
-        clearPlayingArea(xCordinate, yCordinate);
-        if (player === 1) {
-		    player = 2;
-		} else {
-		    player = 1;
-		}
-        if (player === 1) {
-          visited[x][y] = 'x';
-          //x is the computer. o is the user. user goes first
-          
-          drawX(xCordinate, yCordinate);
-        } else {
-          visited[x][y] = 'o';
-          drawO(xCordinate, yCordinate);
-        }
+        visited[x][y] = 'o';
+        drawO(xCordinate, yCordinate);
+        nextMove();
       }
     }
   }
 }
-
-function clearPlayingArea (xCordinate, yCordinate) {
-  context.fillStyle = "#fff";
-  context.fillRect(
-    xCordinate,
-    yCordinate,
-    sectionSize,
-    sectionSize
-  ); 
-}
-function drawO (xCordinate, yCordinate) {
+function drawO (xCordinate, yCordinate) { //Draw O
   var halfSectionSize = (0.5 * sectionSize);
   var centerX = xCordinate + halfSectionSize;
   var centerY = yCordinate + halfSectionSize;
@@ -83,7 +70,7 @@ function drawO (xCordinate, yCordinate) {
   context.stroke();
 }
 
-function drawX (xCordinate, yCordinate) {
+function drawX (xCordinate, yCordinate) { //Draw X
   context.strokeStyle = "#f1be32";
 
   context.beginPath();
@@ -98,7 +85,7 @@ function drawX (xCordinate, yCordinate) {
   context.stroke();
 }
 
-function drawLines (lineWidth, strokeStyle) {
+function drawLines (lineWidth, strokeStyle) {//Draw separating lines
   var lineStart = 4;
   var lineLenght = canvasSize - 5;
   context.lineWidth = lineWidth;
@@ -127,7 +114,7 @@ function drawLines (lineWidth, strokeStyle) {
 
 drawLines(10, lineColor);
 
-function getCanvasMousePosition (event) {
+function getCanvasMousePosition (event) { //get mouse position of where the click has occured
   var rect = canvas.getBoundingClientRect();
   return {
     x: event.clientX - rect.left,
@@ -135,7 +122,7 @@ function getCanvasMousePosition (event) {
   }
 }
 
-canvas.addEventListener('mouseup', function (event) {
+canvas.addEventListener('mouseup', function (event) { //handle the click event
   var canvasMousePosition = getCanvasMousePosition(event);
   addPlayingPiece(canvasMousePosition);
   drawLines(10, lineColor);
