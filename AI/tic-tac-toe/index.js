@@ -32,7 +32,7 @@ outer:	for (x = 0; x < 3; x++) {
   	  	i++;
   	  }
   	}
-	drawX(x * sectionSize, y * sectionSize,);
+	drawX(x * sectionSize, y * sectionSize);
 }
 function addPlayingPiece (mouse) { //When user clicks an area, paint the area 
   var xCordinate;
