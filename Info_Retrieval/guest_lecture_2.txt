@@ -1,0 +1,44 @@
+ES concepts
+Node
+	A single server that runs Easticsearch, stores your data
+Cluster
+	A collection of one or more nodes that together holds your entire data and provides federated indexing and search capablities across all nodes
+Indes
+	A cluster can have multiple indexes, eg buyer index, seller indes
+Type	
+	A index can have one or more typs(share same fields), semantics are upto the user
+Document
+ 	Nasic unit of imformation that can be indexed
+Shards
+	Horizontal partitions of the index so that the index can scale beyond capacity of one node
+Replicas	
+	Shards can be replicated for fault tolerance and supporting large query volume
+
+Build search engine for coep.org.in
+
+
+
+Teams of 2-4
+Crawl
+	Use Nutch, crawl O(100) pages for experimentations
+Index
+	Use Elasticsearch
+Tune relevance
+	Try different field configurations boosting etc
+Deploy
+	Production installation with the right cluster size(with redundany)
+	Handle updates
+Integrate
+	One of the projectss (with full crawl updates and good relevance) , can be integrated with coep.org.in
+
+
+
+Making Solr and ES even simpler
+AWS CloudSEarch
+	https://aws.amazon.com/cloudsearch
+
+AWS Elasticsearch Service
+	https://aws.amazon.com/elasticsearch-service
+
+
+email: vinaykakade@gmail.com
