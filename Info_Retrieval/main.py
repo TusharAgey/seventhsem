@@ -38,11 +38,11 @@ for file in files: #for each file do
 	unique_word_list = []
 	new_words = []
 x = 0
-for i in inverted_index:
+for i in sorted(inverted_index):
 	print i,
 	d = 10 - len(i)
 	while x < d:
 		print "",
 		x = x + 1
 	x = 0
-	print inverted_index[i]
+	print sorted(inverted_index[i], key=itemgetter(1), reverse=True)
