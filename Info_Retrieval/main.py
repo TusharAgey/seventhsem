@@ -1,6 +1,7 @@
-from stemming.porter2 import stem
+#from stemming.porter2 import stem
 from os import listdir
 from os.path import isfile, join
+from operator import itemgetter
 import string
 import sys
 table = string.maketrans(string.punctuation+"0123456789", "                                          ")
@@ -20,7 +21,7 @@ for file in files: #for each file do
 		if word.lower() not in stopwords: #remove stopwords
 			new_words.append(word.lower())
 	for word in new_words: #do stemming
-		newest_words.append(stem(word))
+		newest_words.append(word)
 	new_words = []
 	for word in newest_words: #remove stopwords
 		if word not in stopwords:
