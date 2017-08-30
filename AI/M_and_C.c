@@ -5,7 +5,7 @@ struct myVector{
 	int cannibals;
 	int boat;//1=I have boat & 0=I dont have boat
 }right_bank, left_bank;
-int d;//the boat capacity
+int d, doit = 1;//the boat capacity
 void nextStep(){
 	if(right_bank.boat == 1){
 		if((left_bank.missionaries - (left_bank.cannibals + 1) >= 0 || left_bank.missionaries == 0) && right_bank.cannibals - 1 >= 0){ //send 1 cannibals to other side, if no side effect
@@ -34,13 +34,23 @@ void nextStep(){
 		left_bank.boat = 1;
 	}
 	else if(left_bank.boat == 1){
-		if((right_bank.missionaries - (right_bank.cannibals + d) >= 0 || right_bank.missionaries == 0) && left_bank.cannibals - d >= 0){ //send 2 cannibals to other side, if no side effect
+		if((right_bank.missionaries - (right_bank.cannibals + d) >= 0 || right_bank.missionaries == 0) && left_bank.cannibals - d >= 0 && doit == 1){ //send 2 cannibals to other side, if no side effect
 			left_bank.cannibals -= d;
 			right_bank.cannibals += d;
+			if(d == 3){
+				doit = 0;
+			}
 		}
-		else if((left_bank.missionaries - (left_bank.cannibals + d) >= 0) && (right_bank.cannibals <= right_bank.missionaries + d) && left_bank.missionaries - d >= 0){ //send 2 missinaries to other side, if no side effect
+		else if((right_bank.cannibals <= right_bank.missionaries + d) && left_bank.missionaries - d >= 0){ //send 2 missinaries to other side, if no side effect
 			right_bank.missionaries += d;
 			left_bank.missionaries -= d;
+			doit = 1;
+		}
+		else if(left_bank.missionaries == 0){
+			if(left_bank.cannibals <= d){
+				right_bank.cannibals += left_bank.cannibals;
+				left_bank.cannibals = 0;
+			}
 		}
 		else if(left_bank.missionaries >= 1 && left_bank.cannibals >= 1 && left_bank.missionaries - (d/2) >= 0 && left_bank.cannibals - (d/2) >= 0 && (right_bank.cannibals <= right_bank.missionaries + (d/2))	){ //send a pair of missionari and cannibal to other side if available
 			left_bank.missionaries -= d/2;
@@ -89,8 +99,10 @@ int main(int argc, char *argv[]){
 		printf("Solution not possible\n");
 		return -1;
 	}
-	int flag = 0;
+	int flag = 0;	
 	FILE *fp = fopen("temp.txt", "a");
+	if(d == 3 && atoi(argv[1]) == 2)
+		d = 2;
 	printf("Left side of river\tright side of river\n");
 	printf("| M | C |\t| M | C |\n");
 	printf("| %d | %d |\t| %d | %d |\n", left_bank.missionaries, left_bank.cannibals, right_bank.missionaries, right_bank.cannibals);
@@ -111,8 +123,7 @@ int main(int argc, char *argv[]){
 	fclose(fp);
 	if(flag == 1){
 		system("./support.sh");
-		system("rm temp.txt");
 	}
-	
+	system("rm temp.txt");
 	return 0;
 }
