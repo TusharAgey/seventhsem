@@ -13,8 +13,18 @@ int modInverse(int a, int m){
           return x;
     return -1;
 }
+int fix(int val){//if c-b is negative, return a fixed number
+	if(val >= 0)
+		return val;
+	int temp = 26, i = 1;
+	while(temp < abs(val)){
+		temp = 26 * i;
+		i++;
+	}
+	return (temp - abs(val));
+}
 int main(int argc, char *argv[]){
-	int flag = 0, a, b, c, p;
+	int flag = 0, a, b, c, p, x;
 	if(argc != 5){
 		printf("Usage: program input_filename output_filename a b\n");
 		return 1;
@@ -36,7 +46,8 @@ int main(int argc, char *argv[]){
 				printf("input only alphabets\n");
                                 return 1;
                         }
-			p = (a * (c - b));
+            x = fix(c - b);
+			p = (a * x);
 			p = p % 26;
 			if(p < 0)
 				p += 26;
