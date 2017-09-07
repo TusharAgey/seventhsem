@@ -1,0 +1,16 @@
+1)We need to build the complete software or at least some modules
+2)This document contains all the necessary tasks that we need to do before this monday:
+
+i)Create a good glass hologram model suiting the tablet ->Ajinkya
+ii)Create a centralized website for handling all the human-queries ->Tushar
+iii)Create an android application for taking voice input and sending it to website and receiving the json output back and showing it ->Aditya 
+iv)UI for Android application ->Ajinkya
+v)The bot UI(A small animation that would fit the hologram with different moods) ->Aditya
+vi)Create a Windows Universal application for mocking point (iii) ->Tushar
+vii)Documentation ->Aditya, Tushar, Ajinkya
+				i)We just have to modify the last time ka submission
+				ii)Slight changes in the model is expected
+				iii)We will talk about this tomorrow
+vii)Facilities: i)chatbot
+		ii)Study manager(repetative learning)
+		iii)Password manager
