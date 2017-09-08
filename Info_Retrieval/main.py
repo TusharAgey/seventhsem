@@ -58,8 +58,8 @@ for i in sorted(inverted_index):
 		print "",
 		x = x + 1
 	x = 0
-	new_index[i] = sorted(inverted_index[i], key=itemgetter(0), reverse=True)
+	new_index[i] = sorted(inverted_index[i], key=itemgetter(0))
 	print sorted(inverted_index[i], key=itemgetter(1), reverse=True)
-write_file = open("./input/tf_model", "w")
+write_file = open("./input/tf_modelDemo", "w")
 write_file.write(str(new_index))
 write_file.close()
