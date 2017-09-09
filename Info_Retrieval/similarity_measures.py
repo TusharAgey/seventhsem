@@ -2,75 +2,153 @@
 #now, when the query is fired, the model is read and the similarity is measured
 from os import listdir
 import os.path
-from operator import itemgetter
+import operator
 import string
 import sys
 from math import log10
-def buildTfIdfModelFromTfModel():
-	tf_vector_model = eval(open("./input/tf_modelDemo", "r").read())
+from stemming.porter2 import stem
+from math import sqrt
+def buildTfIdfModelFromTfModel(): #building a tf-idf model based on tf_model
+	tf_vector_model = eval(open("./input/tf_modelDemo", "r").read()) #read tf
 	idf = {}
 	tf_idf = {}
 	num = 0
 	#build idf
-	for term in tf_vector_model:
+	for term in tf_vector_model: #for each term in the tf model dictionary
 		for element in tf_vector_model[term]:
 			if 0 not in element: #term exists in the document
 				num += 1
-		idf[term] = log10((len(tf_vector_model[term])*1.0)/(num*1.0))
+		idf[term] = log10((len(tf_vector_model[term])*1.0)/(num*1.0)) #log(N/dfi) where N=total number of documents and dfi is number of documents having term.
 		num = 0
 	#save this idf for processing the query too.
 	idf_file = open("./input/idf_file", "w")
 	idf_file.write(str(idf))
 	idf_file.close()
 	#build tf-idf
-	for term in tf_vector_model:
+	for term in tf_vector_model: #building tf-idf
 		for element in tf_vector_model[term]:
 			try:
-				tf_idf[term].append([element[0], element[1] * idf[term]])
+				tf_idf[term].append([element[0], element[1] * idf[term]]) #if term is already in the dictionary, then just append document and its tf_idf
 			except Exception as e:
 				tf_idf[term] = []
 				tf_idf[term].append([element[0], element[1] * idf[term]])
 	return tf_idf
 
-def build_tfidf_of_query(query):
-	idf = eval(open("./input/idf_file", "r").read())
-	print idf
+def build_tfidf_of_query(query): #preprocess the query and builds its tf-idf model
+	idf = eval(open("./input/idf_file", "r").read()) #read the idf model
 	tf_idf_of_query = {}
-	for word in query.split():
-		if word in idf:
+	wordslist = query.split() 
+	newwordlist = []
+	stopwords = open("./input/stopword.txt", "r").read().split() #stopwords
+	for word in wordslist:
+		if word not in stopwords: #removing stopword
+			word = stem(word) #stemming
+			if word not in stopwords: #removing stopword
+				newwordlist.append(word)
+	for word in newwordlist:
+		try:
+			tf_idf_of_query[word] = newwordlist.count(word) * idf[word] #calculating tf-idf
+		except Exception as es:
 			pass
+	return tf_idf_of_query
 			
 def innerProduct(query, document_dict): #here onwards, the similarity checks are in operation. query is the string to be searched and document_dict is tf-idf measure
-	pass
+	print "Similarity using inner product:"
+	inner_product = {} #document name and its similarity with the query
+	for word in document_dict:
+		x = word
+		break
+	for document in document_dict[x]: #building a document and its inner_product with query model
+		inner_product[document[0]] = 0
+	for word in query:
+		for mylist in document_dict[word]:
+			inner_product[mylist[0]] += query[word] * mylist[1] #multiply occurance of a term in query and document if same
+	for element in sorted(inner_product.items(), key=operator.itemgetter(1), reverse=True): #print sorted data. Larger the value, closer the document to query
+		print element
+	print " "
+def MinkawaskiDistance(query, document_dict, p): #generalized distance measure
+	distance = {} #document name and its similarity with the query
+	for word in document_dict:
+		x = word
+		break
+	for document in document_dict[x]: #build a document:similarity model
+		distance[document[0]] = 0
+	#calculations
+	sub_sqr_add = 0
+	for document in distance: #for every document
+		for word in document_dict: #for each word in document
+			for eachList in document_dict[word]: #for each document:if_idf model in document
+				if document in eachList: #for each document
+					try:
+						sub_sqr_add += abs(query[word] - eachList[1])**float(p) #the power of absolute differences
+					except Exception as e:
+						sub_sqr_add += (eachList[1])**float(p) #the power
+		distance[document] = sub_sqr_add**(1/float(p)) #square root of sum of absoute differences
+		sub_sqr_add = 0
 
-def MinkawaskiDistance(query, document_dict, p):
-	pass
+	#calculations done
+	for element in sorted(distance.items(), key=operator.itemgetter(1)):
+		print element
+	print " "
 
 def EucladianDistance(query, document_dict):
-	pass
-
+	print "Similarity using Eucladian distance:"
+	MinkawaskiDistance(query, document_dict, 2)
 def ManhattanDistance(query, document_dict):
-	pass
-
+	print "Similarity using Manhattan distance:"
+	MinkawaskiDistance(query, document_dict, 1)
 def CosineSimilarity(query, document_dict):
-	pass
+	print "Similarity using Cosine similarity:"
+	distance = {} #document name and its similarity with the query
+	for word in document_dict:
+		x = word
+		break
+	for document in document_dict[x]:
+		distance[document[0]] = 0
+	#calculations
+	mul_result = 0 #sum of tf_idf product if present in both, the query and the document
+	div_one = 0 #sum of squares of tf_idf of document terms
+	div_two = 0 #sum of squares of tf_idf of query terms
+	for document in distance:
+		for word in document_dict:
+			for eachList in document_dict[word]:
+				if document in eachList:
+					try:
+						if(query[word] != 0 and eachList[1] != 0):
+							mul_result += query[word] * eachList[1]
+					except Exception as e:
+						pass
+					div_one += eachList[1]**2.0
+			try:
+				div_two += query[word]**2.0
+			except Exception as e:
+				pass
+		distance[document] = mul_result/(sqrt(div_two) * sqrt(div_one)) #final cosine similarity formula for a document and the query
+		mul_result = 0
+		div_one = 0
+		div_two = 0
 
-def preProcess(): #this file returnes the tf-idf if it already exists, else returns -1 suggesting invocation buildTfIdfModelFromTfModel
-	if os.path.exist/'):
+	#calculations done
+	for element in sorted(distance.items(), key=operator.itemgetter(1), reverse=True):
+		print element
+	print " "
+def preProcess(): #this file returnes the tf_model if it already exists, else returns -1 suggesting invocation of buildTfIdfModelFromTfModel
+	if os.path.exists("./input/tf_model"): #if tf-model already exists
 		return buildTfIdfModelFromTfModel()
 	print "please create the tf-model using main.py script."
 	return -1
 	
-def main():
+def main(): #input the query and prints the similarity of documents using various similarity measures
 	print "Enter the query: ",
-	query = str(raw_input())
+	query = str(raw_input()) #input the query
 	#find Tf-IDF of the query
 	#now show result of every similarity measure technique.
 	tf_idf = {}
-	tf_idf = preProcess()
+	tf_idf = preProcess() #getting Tf
 	if(tf_idf == -1):
 		return 1
-	print tf_idf
+	query = build_tfidf_of_query(query) #create tf_idf model of the query
+	#various similarity measures
 	innerProduct(query, tf_idf)
 	#MinkawaskiDistance(qury, tf-idf)
 	EucladianDistance(query, tf_idf)
