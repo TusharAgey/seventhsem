@@ -133,7 +133,7 @@ def CosineSimilarity(query, document_dict):
 		print element
 	print " "
 def preProcess(): #this file returnes the tf_model if it already exists, else returns -1 suggesting invocation of buildTfIdfModelFromTfModel
-	if os.path.exists("./input/tf_model"): #if tf-model already exists
+	if os.path.exists("./input/tf_modelDemo"): #if tf-model already exists
 		return buildTfIdfModelFromTfModel()
 	print "please create the tf-model using main.py script."
 	return -1
