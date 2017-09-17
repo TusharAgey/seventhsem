@@ -6,17 +6,38 @@ import string
 import sys
 from subprocess import call
 def measurePerformance(actualresults):
-	expectedresults = {'cs':['doc6'], 'bio':['doc5']}
-	print expectedresults
+	directory = [f for f in listdir("/Users/tushar/Downloads/naive_bayes/expected/")]
+	if '.DS_Store' in directory:
+		directory.remove('.DS_Store')
+	expectedresults = {}
+	for elem in directory:
+		expectedresults[elem] = [f for f in listdir("/Users/tushar/Downloads/naive_bayes/expected/" + elem + "/")]
 	print actualresults
+	#expectedresults = {'cs':['doc6'], 'bio':['doc5']}
+	#actualresults = {'cs':['doc6'], 'bio':['doc5']}
 	TP = 0
-	FP = 0
-	FN = 0 #unclassified documents
-	#iterate over the class:
+	for classs in expectedresults: #iterate over the class:
 		#if expected document is in this class:
-			TP += 1
-		#else:
-			FP += 1
+		for i in range(len(expectedresults[classs])):
+			if expectedresults[classs][i] in actualresults[classs]:
+				TP += 1
+	precesionDiv = 0
+	for elem in actualresults:
+		precesionDiv += len(actualresults[elem])
+	if precesionDiv is 0:
+		print "couldn't classify any\n"
+		return
+	recallDiv = 0
+	for elem in expectedresults:
+		recallDiv += len(expectedresults[elem])
+	precision = float(TP)/float(precesionDiv)
+	recall = float(TP)/float(recallDiv)
+	print "precision is: ",
+	print precision
+	print "\nRecall is: ",
+	print recall
+	print "\nF-measure is: ",
+	print float(2 * precision * recall) / float(precision + recall)
 	#find precision
 	#find recall
 	#find f-measure
@@ -24,21 +45,27 @@ table = string.maketrans(string.punctuation+"0123456789", "                     
 #read the folder naive_docs
 #read all the directories inside, if the directory is train, then explore this directory
 #we will find the classes as the folders
+'''
 TestPath = "./naive_docs/Test/"
 TrainPath = "./naive_docs/Train/"
-stopwords = open("./input/stopword.txt", "r").read().split()
-classes = ['cs', 'bio'] #The training documents in the class are pointed using TrainPath/classes[i]
+'''
+TestPath = "/Users/tushar/Downloads/naive_bayes/20news-18828/Test/"
+TrainPath = "/Users/tushar/Downloads/naive_bayes/20news-18828/Train/"
 
+stopwords = open("./input/stopword.txt", "r").read().split()
+classes = [f for f in listdir(TrainPath)] #The training documents in the class are pointed using TrainPath/classes[i]
+if '.DS_Store' in classes:
+	classes.remove('.DS_Store')
 totalFiles = 0
 mapfileandclass = {}
 for elem in classes:
-	files = [f for f in listdir(TrainPath + "/" + elem)]#get files
+	files = [f for f in listdir(TrainPath + elem)]#get files
 	totalFiles += len(files)
 	mapfileandclass[elem] = []
 
 priorProbability = {}
 for elem in classes:
-	priorProbability[elem] = float(len([f for f in listdir(TrainPath + "/" + elem)]))/float(totalFiles)
+	priorProbability[elem] = float(len([f for f in listdir(TrainPath + elem)]))/float(totalFiles)
 
 elementProbability = {}  #the structure:  class: [[elementi, probabilityi], [elementi+1, probabilityi+1]]
 for elem in classes:
@@ -46,9 +73,9 @@ for elem in classes:
 	features = []
 	new_words = []
 	newest_words = []
-	filesInElem = files = [f for f in listdir(TrainPath + "/" + elem)]
+	filesInElem = files = [f for f in listdir(TrainPath + elem)]
 	for file in filesInElem:
-		for word in open(TrainPath + "/" + elem + "/" + file).read().translate(table).split(): #for each word
+		for word in open(TrainPath + elem + "/" + file).read().translate(table).split(): #for each word
 			if word.lower() not in stopwords: #remove stopwords
 				new_words.append(word.lower())
 		for word in new_words: #do stemming

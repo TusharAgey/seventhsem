@@ -1,0 +1,6 @@
+rm -r expected
+mkdir expected
+rm -r 20news-18828/Train
+rm -r 20news-18828/Test
+mkdir 20news-18828/Train
+mkdir 20news-18828/Test

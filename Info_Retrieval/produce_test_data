@@ -1,0 +1,39 @@
+if [[ $# -ne 1 ]]; then #entry criteria
+	echo "usage: bash produce_test_data num_of_docs"
+	exit
+fi
+totalSize=$1
+trainDocs=$(( totalSize * 2 / 3 ))
+testDocs=$(( totalSize / 3))
+totalClasses=$( ls './20news-18828Bck/Train/' | wc -l) #find out features of the input such as 1/3test docs and 2/3train docs
+
+trainPath='./20news-18828/Train/'
+testPath='./20news-18828/Test/'
+inputPath='./20news-18828Bck/Train/'
+expectedPath='./expected/'
+i=0
+for (( i = 1; i <= $totalClasses; i++ )); do #creating the classes in train path
+	class=$(ls './20news-18828Bck/Train/' | head -$i | tail -1)
+	if [ -d $trainPath$class ]; then
+		p=1
+	else
+		mkdir $trainPath$class
+		mkdir $expectedPath$class
+	fi
+	#statements
+done
+j=0
+for (( i = 1; i <= $totalClasses; i++ )); do #for each class, do copy the documents in required fashion
+	class=$(ls './20news-18828Bck/Train/' | head -$i | tail -1)
+	for (( j = 1; j <=$trainDocs/$totalClasses; j++ )); do #copy $trainDocs/totalClasses documents from class i in backup to class i in training
+		aDoc=$(ls $inputPath$class | head -$i | tail -1)
+		cp $inputPath$class'/'$aDoc $trainPath$class
+	done
+	for (( k = $j; k <= $j + $testDocs/$totalClasses; k++ )); do #copy $testDocs/totalClasses documents from class i in backup to test path
+		aDoc=$(ls $inputPath$class | head -$k | tail -1)
+		cp $inputPath$class'/'$aDoc $testPath
+		cp $inputPath$class'/'$aDoc $expectedPath$class #creating an ideal classification for measuring the performance.
+	done
+	#statements
+done
+
