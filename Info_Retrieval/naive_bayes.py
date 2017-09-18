@@ -5,6 +5,7 @@ from operator import itemgetter
 import string
 import sys
 from subprocess import call
+from fractions import Fraction
 def measurePerformance(actualresults):
 	directory = [f for f in listdir("/Users/tushar/Downloads/naive_bayes/expected/")]
 	if '.DS_Store' in directory:
@@ -111,15 +112,30 @@ for file in files:
 	for elem in classes: #now for each possible set of class
 		newdictionary[elem] = priorProbability[elem] #newdictionary of this class #its element = prior probability of class multiplied by
 		for word in features: #for each word in this document
+			flag = 0
 			for data in elementProbability[elem]:
 				if word in data:
 					flag = 1
-					newdictionary[elem] *= data[1]
-			if(flag == 0):
-				newdictionary[elem] = 0
-			flag = 0
-				
+					#newdictionary[elem] *= data[1]
+			if(flag == 0): #zero frequency problem
+				break
+		if(flag == 0):
+			for word in features: #for each word in this document
+				for data in elementProbability[elem]:
+					if word in data:
+						res = Fraction(data[1])
+						newdictionary[elem] *= float(res.numerator + 1) / float(res.denominator + len(features))
+						flag = 1
+				if(flag == 0):
+					newdictionary[elem] *= 1.0/float(len(features) * 2)
+				flag = 0	
+		else:
+			for word in features: #for each word in this document
+				for data in elementProbability[elem]:
+					if word in data:
+						newdictionary[elem] *= data[1]
 			#its probability for this class
+	#print newdictionary
 	newestdictionary = {}
 	for elem in newdictionary:
 		if(sum(newdictionary.values()) != 0):
