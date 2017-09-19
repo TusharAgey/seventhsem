@@ -50,6 +50,7 @@
 <script src="../plugins/sigma.renderers.edgeLabels/sigma.canvas.edges.labels.def.js"></script>
 <script src="../plugins/sigma.renderers.edgeLabels/sigma.canvas.edges.labels.curve.js"></script>
 <script src="../plugins/sigma.renderers.edgeLabels/sigma.canvas.edges.labels.curvedArrow.js"></script>
+<script type="text/javascript" src="data/input.json"></script>
 <div id="container">
   <style>
     #graph-container {
@@ -71,21 +72,33 @@ var i,
     s,
     //Read a file with initial data
     //Then plot the graph
-    N = 3,
-    E = 5,
+    N = 0,
+    E = 0,
     g = {
       nodes: [],
       edges: []
     };
-
+//input the json file
+var result = null;
+var xmlhttp = new XMLHttpRequest();
+xmlhttp.open("GET", "./data/input.json", false);
+xmlhttp.send();
+if (xmlhttp.status==200) {
+	result = xmlhttp.responseText;
+}
+var ip = JSON.parse(result);
+N = ip.N;
+E = ip.E;
+//print this json
 // Generate a random graph:
+var newNodes = Object.keys(ip.heuristics);
 for (i = 0; i < N; i++)
   g.nodes.push({
-    id: 'n' + i,
-    label: 'Node ' + i,
-    x: Math.random(),
-    y: Math.random(),
-    size: Math.random(),
+    id: 'n' + Object.keys(ip.heuristics[i]),
+    label: Object.keys(ip.heuristics[i]) + '[H=' + ip.heuristics[i][Object.keys(ip.heuristics[i])] + ']',
+    x: i==0 ? 25 : (i%2==0?50:0),
+    y: i==0 ? i*10 : (i%2 !=0 ? i*10 : (i-1)*10),
+    size: 1,
     color: '#FF0000'
   });
 
@@ -93,11 +106,11 @@ for (i = 0; i < E; i++)
   g.edges.push({
     id: 'e' + i,
     label: 'Edge ' + i,
-    source: 'n' + (Math.random() * N | 0),
-    target: 'n' + (Math.random() * N | 0),
-    size: Math.random(),
+    source: 'n' + Object.keys(ip.heuristics[Math.random() * N | 0]),
+    target: 'n' + Object.keys(ip.heuristics[Math.random() * N | 0]),
+    size: 1,
     color: '#00FF00',
-    type: ['line', 'curve', 'arrow', 'curvedArrow'][Math.random() * 4 | 0]
+    type: 'arrow'
   });
 
 // Instantiate sigma:
