@@ -148,7 +148,7 @@ if (xmlhttp.status==200) {
 }
 var ip = JSON.parse(result);
 //input the json file
-function drawInitial(){
+function drawInitial(input){ //if called without parameter, the default graph from input.jason is printed. else with the path highlighted.
 	N = ip.N;
 	E = ip.E;
 	g = {
@@ -171,18 +171,32 @@ function drawInitial(){
 
 	for (i = 0; i < E; i++){
 		for(j = 0; j < N; j++){
-		  g.edges.push({
-		    id: 'e' + i + j,
-		    label: 'Edge ' + i,
-		    source: 'n' + Object.keys(ip.heuristics[Math.random() * N | 0]),
-		    target: 'n' + Object.keys(ip.heuristics[Math.random() * N | 0]),
-		    size: 1,
-		    color: '#00FF00',
-		    type: ['curvedArrow']
-		  });
+		  var x = ip.edges[i][j];
+		  if(x != -1 && x != 0)
+			  g.edges.push({
+			    id: 'e' + i + j,
+			    label: 'Edge Weight=' + ip.edges[i][j],
+			    source: 'n' + Object.keys(ip.heuristics[i]),
+			    target: 'n' + Object.keys(ip.heuristics[j]),
+			    size: 1,
+			    color: whatToDraw(Object.keys(ip.heuristics[i]), Object.keys(ip.heuristics[j]), input) ? '#00FF00' : '#0000FF',
+			    type: ['arrow']
+			  });
 		}
 	}
 	renderGraph();
+	
+}
+function whatToDraw(src, dest, input){ //The path is drawn using this function
+	if(!input)
+		return 1;
+	var i;
+	for(i = 0; i < input.path.length - 1; i++){
+		if(String(src).localeCompare(input.path[i]) == 0 && String(dest).localeCompare(input.path[i + 1]) == 0){
+			return 0;
+		}
+	}
+	return 1;
 }
 function renderGraph(){
 	// Instantiate sigma:
@@ -197,7 +211,16 @@ function renderGraph(){
 	  }
 	});
 }
-function generateAndTest(){
+function generateAndTest(){ //reads the output of generateAndTest algorithm and displays the path followed by the algo
+	var res = null;
+	var xmlhttp = new XMLHttpRequest();
+	xmlhttp.open("GET", "./data/BLA.json", false);
+	xmlhttp.send();
+	if (xmlhttp.status==200) {
+		res = xmlhttp.responseText;
+	}
+	var inp = JSON.parse(res);
+	drawInitial(inp)
 }
 function simpleHillClimbing(){
 }
