@@ -1,3 +1,9 @@
+<head>
+<title>
+Search Algorithms
+</title>
+<link rel="stylesheet" type="text/css" href="style.css">
+</head>
 <!-- START SIGMA IMPORTS -->
 <script src="../src/sigma.core.js"></script>
 <script src="../src/conrad.js"></script>
@@ -54,14 +60,68 @@
 <div id="container">
   <style>
     #graph-container {
-      top: 0;
-      bottom: 0;
-      left: 0;
-      right: 0;
+      top: 200;
+      bottom: 200;
+      left: 200;
+      right: 200;
       position: absolute;
     }
   </style>
-  <div id="graph-container"></div>
+  <div id="graph-container" style="color:#000000"></div>
+</div>
+<div class="container">
+  <ul>
+  <li>
+    <input type="radio" id="a-option" name="selector" onchange="drawInitial()">
+    <label for="a-option">Show Graph</label>
+    <div class="check"></div>
+  </li>
+ <li>
+    <input type="radio" id="b-option" name="selector" onchange="generateAndTest()">
+    <label for="b-option">generate and test</label>
+    <div class="check"></div>
+  </li>
+ <li>
+    <input type="radio" id="c-option" name="selector" onchange="simpleHillClimbing()">
+    <label for="c-option">simple hill climbing</label>
+    <div class="check"></div>
+  </li>
+ <li>
+    <input type="radio" id="d-option" name="selector" onchange="steepestAscentHillClimbing()">
+    <label for="d-option">steepest ascent hill climbing</label>
+    <div class="check"></div>
+  </li>
+ <li>
+    <input type="radio" id="e-option" name="selector" onchange="simulatedAnnealing()">
+    <label for="e-option">simulated annealing</label>
+    <div class="check"></div>
+  </li>
+ <li>
+    <input type="radio" id="f-option" name="selector" onchange="DFS()">
+    <label for="f-option">DFS</label>
+    <div class="check"></div>
+  </li>
+ <li>
+    <input type="radio" id="g-option" name="selector" onchange="BFS()">
+    <label for="g-option">BFS</label>
+    <div class="check"></div>
+  </li>
+ <li>
+    <input type="radio" id="h-option" name="selector" onchange="bestFirstSearch()">
+    <label for="h-option">Best First Search</label>
+    <div class="check"></div>
+  </li>
+ <li>
+    <input type="radio" id="i-option" name="selector" onchange="aStar()">
+    <label for="i-option">A*</label>
+    <div class="check"></div>
+  </li>
+ <li>
+    <input type="radio" id="j-option" name="selector" onchange="aoStar()">
+    <label for="j-option">AO*</label>
+    <div class="check"></div>
+  </li>
+ </ul>
 </div>
 <script>
 /**
@@ -78,7 +138,6 @@ var i,
       nodes: [],
       edges: []
     };
-//input the json file
 var result = null;
 var xmlhttp = new XMLHttpRequest();
 xmlhttp.open("GET", "./data/input.json", false);
@@ -87,41 +146,69 @@ if (xmlhttp.status==200) {
 	result = xmlhttp.responseText;
 }
 var ip = JSON.parse(result);
-N = ip.N;
-E = ip.E;
-//print this json
-// Generate a random graph:
-var newNodes = Object.keys(ip.heuristics);
-for (i = 0; i < N; i++)
-  g.nodes.push({
-    id: 'n' + Object.keys(ip.heuristics[i]),
-    label: Object.keys(ip.heuristics[i]) + '[H=' + ip.heuristics[i][Object.keys(ip.heuristics[i])] + ']',
-    x: i==0 ? 25 : (i%2==0?50:0),
-    y: i==0 ? i*10 : (i%2 !=0 ? i*10 : (i-1)*10),
-    size: 1,
-    color: '#FF0000'
-  });
+//input the json file
+function drawInitial(){
+	N = ip.N;
+	E = ip.E;
+	g = {
+     	 nodes: [],
+     	 edges: []
+    	};
+	document.getElementById('graph-container').innerHTML = "";
+	//print this json
+	// Generate a random graph:
+	var newNodes = Object.keys(ip.heuristics);
+	for (i = 0; i < N; i++)
+	  g.nodes.push({
+	    id: 'n' + Object.keys(ip.heuristics[i]),
+	    label: Object.keys(ip.heuristics[i]) + '[H=' + ip.heuristics[i][Object.keys(ip.heuristics[i])] + ']',
+	    x: i==0 ? 25 : (i%2==0?50:0),
+	    y: i==0 ? i*10 : (i%2 !=0 ? i*10 : (i-1)*10),
+	    size: 1,
+	    color: '#FF0000'
+	  });
 
-for (i = 0; i < E; i++)
-  g.edges.push({
-    id: 'e' + i,
-    label: 'Edge ' + i,
-    source: 'n' + Object.keys(ip.heuristics[Math.random() * N | 0]),
-    target: 'n' + Object.keys(ip.heuristics[Math.random() * N | 0]),
-    size: 1,
-    color: '#00FF00',
-    type: 'arrow'
-  });
-
-// Instantiate sigma:
-s = new sigma({
-  graph: g,
-  renderer: {
-    container: document.getElementById('graph-container'),
-    type: 'canvas'
-  },
-  settings: {
-    edgeLabelSize: 'proportional'
-  }
-});
+	for (i = 0; i < E; i++)
+	  g.edges.push({
+	    id: 'e' + i,
+	    label: 'Edge ' + i,
+	    source: 'n' + Object.keys(ip.heuristics[Math.random() * N | 0]),
+	    target: 'n' + Object.keys(ip.heuristics[Math.random() * N | 0]),
+	    size: 1,
+	    color: '#00FF00',
+	    type: 'arrow'
+	  });
+	renderGraph();
+}
+function renderGraph(){
+	// Instantiate sigma:
+	s = new sigma({
+	  graph: g,
+	  renderer: {
+	    container: document.getElementById('graph-container'),
+	    type: 'canvas'
+	  },
+	  settings: {
+	    edgeLabelSize: 'proportional'
+	  }
+	});
+}
+function generateAndTest(){
+}
+function simpleHillClimbing(){
+}
+function steepestAscentHillClimbing(){
+}
+function simulatedAnnealing(){
+}
+function DFS(){
+}
+function BFS(){
+}
+function bestFirstSearch(){
+}
+function aStar(){
+}
+function aoStar(){
+}
 </script>
