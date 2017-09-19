@@ -60,10 +60,10 @@ Search Algorithms
 <div id="container">
   <style>
     #graph-container {
-      top: 200;
-      bottom: 200;
-      left: 200;
-      right: 200;
+      top: 100;
+      bottom: 100;
+      left: 300;
+      right: 30;
       position: absolute;
     }
   </style>
@@ -129,6 +129,7 @@ Search Algorithms
  * renderer.
  */
 var i,
+    j,
     s,
     //Read a file with initial data
     //Then plot the graph
@@ -168,16 +169,19 @@ function drawInitial(){
 	    color: '#FF0000'
 	  });
 
-	for (i = 0; i < E; i++)
-	  g.edges.push({
-	    id: 'e' + i,
-	    label: 'Edge ' + i,
-	    source: 'n' + Object.keys(ip.heuristics[Math.random() * N | 0]),
-	    target: 'n' + Object.keys(ip.heuristics[Math.random() * N | 0]),
-	    size: 1,
-	    color: '#00FF00',
-	    type: 'arrow'
-	  });
+	for (i = 0; i < E; i++){
+		for(j = 0; j < N; j++){
+		  g.edges.push({
+		    id: 'e' + i + j,
+		    label: 'Edge ' + i,
+		    source: 'n' + Object.keys(ip.heuristics[Math.random() * N | 0]),
+		    target: 'n' + Object.keys(ip.heuristics[Math.random() * N | 0]),
+		    size: 1,
+		    color: '#00FF00',
+		    type: ['curvedArrow']
+		  });
+		}
+	}
 	renderGraph();
 }
 function renderGraph(){
