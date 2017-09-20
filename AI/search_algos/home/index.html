@@ -169,7 +169,7 @@ function drawInitial(input){ //if called without parameter, the default graph fr
 	    color: '#FF0000'
 	  });
 
-	for (i = 0; i < E; i++){
+	for (i = 0; i < ip.heuristics.length; i++){
 		for(j = 0; j < N; j++){
 		  var x = ip.edges[i][j];
 		  if(x != -1 && x != 0)
@@ -223,19 +223,91 @@ function generateAndTest(){ //reads the output of generateAndTest algorithm and 
 	drawInitial(inp)
 }
 function simpleHillClimbing(){
+	var res = null;
+	var xmlhttp = new XMLHttpRequest();
+	xmlhttp.open("GET", "./data/SHC.json", false);
+	xmlhttp.send();
+	if (xmlhttp.status==200) {
+		res = xmlhttp.responseText;
+	}
+	var inp = JSON.parse(res);
+	drawInitial(inp)
 }
 function steepestAscentHillClimbing(){
+	var res = null;
+	var xmlhttp = new XMLHttpRequest();
+	xmlhttp.open("GET", "./data/SAHC.json", false);
+	xmlhttp.send();
+	if (xmlhttp.status==200) {
+		res = xmlhttp.responseText;
+	}
+	var inp = JSON.parse(res);
+	drawInitial(inp)
 }
 function simulatedAnnealing(){
+	var res = null;
+	var xmlhttp = new XMLHttpRequest();
+	xmlhttp.open("GET", "./data/SA.json", false);
+	xmlhttp.send();
+	if (xmlhttp.status==200) {
+		res = xmlhttp.responseText;
+	}
+	var inp = JSON.parse(res);
+	drawInitial(inp)
 }
 function DFS(){
+	var res = null;
+	var xmlhttp = new XMLHttpRequest();
+	xmlhttp.open("GET", "./data/DFS.json", false);
+	xmlhttp.send();
+	if (xmlhttp.status==200) {
+		res = xmlhttp.responseText;
+	}
+	var inp = JSON.parse(res);
+	drawInitial(inp)
 }
 function BFS(){
+	var res = null;
+	var xmlhttp = new XMLHttpRequest();
+	xmlhttp.open("GET", "./data/BFS.json", false);
+	xmlhttp.send();
+	if (xmlhttp.status==200) {
+		res = xmlhttp.responseText;
+	}
+	var inp = JSON.parse(res);
+	drawInitial(inp)
 }
 function bestFirstSearch(){
+	var res = null;
+	var xmlhttp = new XMLHttpRequest();
+	xmlhttp.open("GET", "./data/Best.json", false);
+	xmlhttp.send();
+	if (xmlhttp.status==200) {
+		res = xmlhttp.responseText;
+	}
+	var inp = JSON.parse(res);
+	drawInitial(inp)
 }
 function aStar(){
+	var res = null;
+	var xmlhttp = new XMLHttpRequest();
+	xmlhttp.open("GET", "./data/A.json", false);
+	xmlhttp.send();
+	if (xmlhttp.status==200) {
+		res = xmlhttp.responseText;
+	}
+	var inp = JSON.parse(res);
+	drawInitial(inp)
 }
 function aoStar(){
+	var res = null;
+	var xmlhttp = new XMLHttpRequest();
+	xmlhttp.open("GET", "./data/AO.json", false);
+	xmlhttp.send();
+	if (xmlhttp.status==200) {
+		res = xmlhttp.responseText;
+	}
+	var inp = JSON.parse(res);
+	drawInitial(inp)
 }
 </script>
