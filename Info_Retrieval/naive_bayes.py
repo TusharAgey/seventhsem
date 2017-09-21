@@ -1,21 +1,19 @@
-#temporary removal of stemmer code
-#from stemming.porter2 import stem
+from stemming.porter2 import stem
 from os import listdir
 from os.path import isfile, join
 from operator import itemgetter
 import string
 import sys
 from subprocess import call
-from fractions import Fraction
 def measurePerformance(actualresults):
-	'''directory = [f for f in listdir("/Users/tushar/Downloads/naive_bayes/expected/")]
+	directory = [f for f in listdir("/Users/tushar/Downloads/naive_bayes/expected/")]
 	if '.DS_Store' in directory:
 		directory.remove('.DS_Store')
 	expectedresults = {}
 	for elem in directory:
-		expectedresults[elem] = [f for f in listdir("/Users/tushar/Downloads/naive_bayes/expected/" + elem + "/")]'''
+		expectedresults[elem] = [f for f in listdir("/Users/tushar/Downloads/naive_bayes/expected/" + elem + "/")]
 	print actualresults
-	expectedresults = {'cs':['doc6'], 'bio':['doc5']}
+	#expectedresults = {'cs':['doc6'], 'bio':['doc5']}
 	#actualresults = {'cs':['doc6'], 'bio':['doc5']}
 	TP = 0
 	for classs in expectedresults: #iterate over the class:
@@ -47,13 +45,13 @@ table = string.maketrans(string.punctuation+"0123456789", "                     
 #read the folder naive_docs
 #read all the directories inside, if the directory is train, then explore this directory
 #we will find the classes as the folders
-
+'''
 TestPath = "./naive_docs/Test/"
 TrainPath = "./naive_docs/Train/"
 '''
 TestPath = "/Users/tushar/Downloads/naive_bayes/20news-18828/Test/"
 TrainPath = "/Users/tushar/Downloads/naive_bayes/20news-18828/Train/"
-'''
+
 stopwords = open("./input/stopword.txt", "r").read().split()
 classes = [f for f in listdir(TrainPath)] #The training documents in the class are pointed using TrainPath/classes[i]
 if '.DS_Store' in classes:
@@ -64,13 +62,14 @@ for elem in classes:
 	files = [f for f in listdir(TrainPath + elem)]#get files
 	totalFiles += len(files)
 	mapfileandclass[elem] = []
+
 priorProbability = {}
 for elem in classes:
 	priorProbability[elem] = float(len([f for f in listdir(TrainPath + elem)]))/float(totalFiles)
 
-classFeatures  = {}#this is the list of features per class
+elementProbability = {}  #the structure:  class: [[elementi, probabilityi], [elementi+1, probabilityi+1]]
 for elem in classes:
-	classFeatures[elem] = []
+	elementProbability[elem] = []
 	features = []
 	new_words = []
 	newest_words = []
@@ -80,17 +79,17 @@ for elem in classes:
 			if word.lower() not in stopwords: #remove stopwords
 				new_words.append(word.lower())
 		for word in new_words: #do stemming
-			newest_words.append(word) #removed stemmer for a while
+			newest_words.append(stem(word))
 		for word in newest_words: #remove stopwords
 			if word not in stopwords:
 				features.append(word)
 		new_words = []
 		newest_words = []
-	classFeatures[elem] = features
+	for word in set(features):
+		elementProbability[elem].append([word, float(features.count(word))/float(len(features))])
 	features = []
 	new_words = []
 	newest_words = []
-#print classFeatures
 #print elementProbability
 #now we have both, the class probability as well as the elements probability.
 #jsut apply the naive bayes rule now
@@ -99,12 +98,11 @@ files = [f for f in listdir(TestPath + "/")]
 for file in files:
 	newdictionary = {}
 	flag = 0
-	zerofreq = 0
 	for word in open(TestPath + "/" + file).read().translate(table).split(): #for each word preprocess the document
 		if word.lower() not in stopwords: #remove stopwords
 				new_words.append(word.lower())
 		for word in new_words: #do stemming
-			newest_words.append(word) #removed stemmer for a while
+			newest_words.append(stem(word))
 		for word in newest_words: #remove stopwords
 			if word not in stopwords:
 				features.append(word)
@@ -113,22 +111,21 @@ for file in files:
 	for elem in classes: #now for each possible set of class
 		newdictionary[elem] = priorProbability[elem] #newdictionary of this class #its element = prior probability of class multiplied by
 		for word in features: #for each word in this document
-			if word not in classFeatures[elem]:#zero frequency problem
-				zerofreq += 1 #counting unavailable elements
-		if(zerofreq is not 0):
-			for word in features: #for each word in this document
-				if word in classFeatures[elem]:
-						newdictionary[elem] *= float(classFeatures[elem].count(word) + 1) / float(len(classFeatures[elem]) * 2 + zerofreq)
-				else:
-					newdictionary[elem] *= 1.0/float(len(classFeatures[elem]) * 2 + zerofreq)	
-		else:
-			for word in features: #for each word in this document
-				newdictionary[elem] *= float(classFeatures[elem].count(word)) / float(len(classFeatures[elem]))
+			for data in elementProbability[elem]:
+				if word in data:
+					flag = 1
+					newdictionary[elem] *= data[1]
+			if(flag == 0):
+				newdictionary[elem] = 0
+			flag = 0
+				
 			#its probability for this class
-	#print newdictionary
 	newestdictionary = {}
 	for elem in newdictionary:
-		newestdictionary[elem] = newdictionary[elem]/sum(newdictionary.values())
+		if(sum(newdictionary.values()) != 0):
+			newestdictionary[elem] = newdictionary[elem]/sum(newdictionary.values())
+		else:
+			newestdictionary[elem] = 0
 	features = []
 	if(max(newdictionary.values()) != 0):
 		putinthisclass = max(newestdictionary, key=newestdictionary.get) 
