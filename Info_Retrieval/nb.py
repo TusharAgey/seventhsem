@@ -85,6 +85,8 @@ def startProcessing(testOrActual):
 		newest_words = []
 
 	TestDocs = [f for f in listdir(TestPath + "/")]
+	if '.DS_Store' in TestDocs:
+		TestDocs.remove('.DS_Store')
 	finalClassification = {}
 	for elem in allClasses:
 		finalClassification[elem] = []
@@ -114,7 +116,6 @@ def startProcessing(testOrActual):
 				finalProbability[elem] = float(beingInClassProbability[elem])/float(sum(beingInClassProbability.values()))
 		if(finalProbability):
 			finalClassification[max(finalProbability, key=finalProbability.get) ].append(file)
-
 	print finalClassification
 if(len(sys.argv) == 1):
 	print "usage: python nb.py caseId"
