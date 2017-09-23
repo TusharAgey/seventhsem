@@ -1,17 +1,19 @@
 import json
-class MyQUEUE: # just an implementation of a queue
+class MyStack: # just an implementation of a queue
 	def __init__(self):
 		self.elements = []		
-	def enqueue(self,val):
+	def push(self,val):
 		self.elements.append(val)		
-	def dequeue(self):
+	def pop(self):
 		val = None
 		try:
-			val = self.elements[0]
+			val = self.elements[len(self.elements) - 1]
 			if len(self.elements) == 1:
 				self.elements = []
 			else:
-				self.elements = self.elements[1:]	
+				self.elements.reverse()
+				self.elements = self.elements[1:]
+				self.elements.reverse()
 		except:
 			pass
 		return val	
@@ -42,21 +44,22 @@ def bfs(input):
 				goal = data
 	finalPath = []
 	finalPath.append(start)
-	queue = MyQUEUE()
-	queue.enqueue(start)
+	stack = MyStack()
+	stack.push(start)
 	neighbours = []
-	while queue.IsEmpty() == False:
-		nextElem = queue.dequeue()
+	while stack.IsEmpty() == False:
+		nextElem = stack.pop()
 		if nextElem not in finalPath:
 			finalPath.append(nextElem)
 		neighbours = getNeighbours(nextElem, input['edges'], finalPath)
 		for elem in neighbours:
 			if elem not in finalPath:
-				queue.enqueue(elem)
+				stack.push(elem)
+	print finalPath
 	return finalPath
 js=open('./data/input.json')
 data=json.load(js)
 finalPath = {"path" : []}
 finalPath['path'] = bfs(data)
-with open('./data/BFS.json', 'w') as fp:
+with open('./data/DFS.json', 'w') as fp:
     json.dump(finalPath, fp)

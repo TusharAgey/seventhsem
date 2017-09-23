@@ -6,7 +6,41 @@ import string
 import sys
 from subprocess import call
 from fractions import Fraction
-
+def measurePerformance(actualresults, condition):
+	if condition == 1:
+		directory = [f for f in listdir("/Users/tushar/Downloads/naive_bayes/expected/")]
+		if '.DS_Store' in directory:
+			directory.remove('.DS_Store')
+		expectedresults = {}
+		for elem in directory:
+			expectedresults[elem] = [f for f in listdir("/Users/tushar/Downloads/naive_bayes/expected/" + elem + "/")]
+		print actualresults
+	else:
+		expectedresults = {'cs':['doc6'], 'bio':['doc5']}
+	#actualresults = {'cs':['doc6'], 'bio':['doc5']}
+	TP = 0
+	for classs in expectedresults: #iterate over the class:
+		#if expected document is in this class:
+		for i in range(len(expectedresults[classs])):
+			if expectedresults[classs][i] in actualresults[classs]:
+				TP += 1
+	precesionDiv = 0
+	for elem in actualresults:
+		precesionDiv += len(actualresults[elem])
+	if precesionDiv is 0:
+		print "couldn't classify any\n"
+		return
+	recallDiv = 0
+	for elem in expectedresults:
+		recallDiv += len(expectedresults[elem])
+	precision = float(TP)/float(precesionDiv)
+	recall = float(TP)/float(recallDiv)
+	print "precision is: ",
+	print precision
+	print "\nRecall is: ",
+	print recall
+	print "\nF-measure is: ",
+	print float(2 * precision * recall) / float(precision + recall)
 def findPriorProbability(classs, classDocsMatrix, totalTrainDocs): #function to return prior probability of the class, which is num(docs in this class)/num(total docs)
 	#classDocsMatrix = {"class1": [doc1, doc2], "class2": [doc1, doc2]}
 	#classs is the class whose prior probability is to be found
@@ -29,15 +63,19 @@ def findClassProbabilityWithFeaturesAvailable(classs, classDocsMatrix, totalTrai
 	probability = findPriorProbability(classs, classDocsMatrix, totalTrainDocs)
 	for elem in documentFeatures:
 		probability *= float(classFeatures.count(elem))/float(len(classFeatures))
+		if(probability < 1.72922976044e-300):
+			return probability
 	return probability
 
 def findClassProbabilityWithFeaturesUnAvailable(classs, classDocsMatrix, totalTrainDocs, documentFeatures, classFeatures): #doing laplase smoothning
 	probability = findPriorProbability(classs, classDocsMatrix, totalTrainDocs) #find prior probability of class
 	for elem in documentFeatures:
-		try:
+		if(classFeatures.count(elem) != 0):
 			probability *= float(classFeatures.count(elem) + 1)/float(len(classFeatures) + len(classFeatures)) #if the feature is in the Training Dataset
-		except Exception as e:
+		else:
 			probability *= float(1)/float(len(classFeatures) + len(classFeatures)) #if the feature is not in Training Dataset
+		if(probability < 1.72922976044e-300):
+			return probability
 	return probability
 def startProcessing(testOrActual):
 	#testOrActual if is 0, then takes data from test path else from newsgroup dataset
@@ -112,11 +150,10 @@ def startProcessing(testOrActual):
 				beingInClassProbability[elem] = findClassProbabilityWithFeaturesUnAvailable(elem, classDocsMatrix, totalTrainDocs, documentFeatures, classFeatures[elem])
 		finalProbability = {}
 		for elem in allClasses:
-			if sum(beingInClassProbability.values()) != 0.0:
-				finalProbability[elem] = float(beingInClassProbability[elem])/float(sum(beingInClassProbability.values()))
+			finalProbability[elem] = float(beingInClassProbability[elem])/float(sum(beingInClassProbability.values()))
 		if(finalProbability):
 			finalClassification[max(finalProbability, key=finalProbability.get) ].append(file)
-	print finalClassification
+	measurePerformance(finalClassification, testOrActual)
 if(len(sys.argv) == 1):
 	print "usage: python nb.py caseId"
 	exit()
