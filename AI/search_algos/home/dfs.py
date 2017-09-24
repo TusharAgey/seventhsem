@@ -34,7 +34,7 @@ def getNeighbours(nextElem, arrOfArr, visited):
 		x += 1
 	return elems
 
-def bfs(input):
+def dfs(input):
 	visited = []
 	start = 'A' #considering A as start node always & element with 0 heuristic as goal node
 	#{"edges": [[0, 3, 4, -1, -1], [-1, 0, 5, 6, 7], [-1, -1, 0, 1, 2], [-1, -1, -1, 0, 1], [-1, -1, -1, -1, 0]]}
@@ -60,6 +60,6 @@ def bfs(input):
 js=open('./data/input.json')
 data=json.load(js)
 finalPath = {"path" : []}
-finalPath['path'] = bfs(data)
+finalPath['path'] = dfs(data)
 with open('./data/DFS.json', 'w') as fp:
     json.dump(finalPath, fp)

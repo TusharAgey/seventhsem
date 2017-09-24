@@ -15,7 +15,7 @@ def getSmallestNeighbours(nextElem, arrOfArr, visited, heuristic):
 	if data not in visited:
 		return data
 	return -1
-def bfs(input):
+def sahc(input):
 	visited = []
 	heuristicVals = []
 	for elem in input['heuristics']:
@@ -40,6 +40,6 @@ def bfs(input):
 js=open('./data/input.json')
 data=json.load(js)
 finalPath = {"path" : []}
-finalPath['path'] = bfs(data)
+finalPath['path'] = sahc(data)
 with open('./data/SAHC.json', 'w') as fp:
     json.dump(finalPath, fp)

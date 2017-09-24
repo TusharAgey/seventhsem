@@ -22,6 +22,20 @@ for i in range (myInput['N']):
 		print "enter distance between " + chr(ord('A') + i)+", " + chr(ord('A') + j)+ " : ",
 		mylist.append(input())
 	myInput['edges'].append(mylist)
+option = 'n'
+andNodes = []
+aDict = {}
+while option is "n":
+	print "enter values such as B and C are And Nodes with respect to A: ",
+	b = str(raw_input())
+	c = str(raw_input())
+	a = str(raw_input())
+	print "stop? n/y:",
+	option = str(raw_input())
+	aDict[a] = []
+	aDict[a].append(b)
+	aDict[a].append(c)
+myInput['ands'] = aDict
 #also input information of and nodes.
 with open('./data/input.json', 'w') as fp:
     json.dump(myInput, fp)
