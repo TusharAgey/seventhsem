@@ -146,9 +146,15 @@ xmlhttp.send();
 if (xmlhttp.status==200) {
 	result = xmlhttp.responseText;
 }
-var ip = JSON.parse(result);
+var inp = JSON.parse(result);
 //input the json file
-function drawInitial(input){ //if called without parameter, the default graph from input.jason is printed. else with the path highlighted.
+function drawInitial(input, graphAO){ //if called without parameter, the default graph from input.jason is printed. else with the path highlighted.
+	if(graphAO){
+		ip = graphAO;
+	}
+	else{
+		ip = inp;
+	}
 	N = ip.N;
 	E = ip.E;
 	g = {
@@ -159,15 +165,16 @@ function drawInitial(input){ //if called without parameter, the default graph fr
 	//print this json
 	// Generate a random graph:
 	var newNodes = Object.keys(ip.heuristics);
-	for (i = 0; i < N; i++)
-	  g.nodes.push({
-	    id: 'n' + Object.keys(ip.heuristics[i]),
-	    label: Object.keys(ip.heuristics[i]) + '[H=' + ip.heuristics[i][Object.keys(ip.heuristics[i])] + ']',
-	    x: i==0 ? 25 : (i%2==0?50:0),
-	    y: i==0 ? i*10 : (i%2 !=0 ? i*10 : (i-1)*10),
-	    size: 1,
-	    color: '#FF0000'
-	  });
+	for (i = 0; i < N; i++){
+		  g.nodes.push({
+		    id: 'n' + Object.keys(ip.heuristics[i]),
+		    label: Object.keys(ip.heuristics[i]) + '[H=' + ip.heuristics[i][Object.keys(ip.heuristics[i])] + ']',
+		    x: i==0 ? 25 : (i%2==0?50:0),
+		    y: i==0 ? i*10 : (i%2 !=0 ? i*10 : (i-1)*10),
+		    size: 1,
+		    color: '#FF0000'
+		  });
+	}
 
 	for (i = 0; i < ip.heuristics.length; i++){
 		for(j = 0; j < N; j++){
@@ -308,6 +315,15 @@ function aoStar(){
 		res = xmlhttp.responseText;
 	}
 	var inp = JSON.parse(res);
-	drawInitial(inp)
+
+	var res = null;
+	var xmlhttp = new XMLHttpRequest();
+	xmlhttp.open("GET", "./data/AOStarInput.json", false);
+	xmlhttp.send();
+	if (xmlhttp.status==200) {
+		res = xmlhttp.responseText;
+	}
+	var inpGraph = JSON.parse(res);
+	drawInitial(inp, inpGraph)
 }
 </script>
