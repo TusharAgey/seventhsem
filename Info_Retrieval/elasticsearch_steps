@@ -1,0 +1,24 @@
+PUT twitter
+{
+    "settings" : {
+        "index" : {
+            "number_of_shards" : 3, 
+            "number_of_replicas" : 2 
+        }
+    }
+}
+
+
+#creates an index with name twitter
+
+curl -XPUT 'localhost:9200/customer/external/1?pretty' -d '
+{
+  "name": "John Doe"
+}'
+
+
+curl -XGET 'localhost:9200/customer/external/1?pretty'
+
+GET /_search?q=john
+
+
