@@ -92,11 +92,6 @@ Search Algorithms
     <div class="check"></div>
   </li>
  <li>
-    <input type="radio" id="e-option" name="selector" onchange="simulatedAnnealing()">
-    <label for="e-option">simulated annealing</label>
-    <div class="check"></div>
-  </li>
- <li>
     <input type="radio" id="f-option" name="selector" onchange="DFS()">
     <label for="f-option">DFS</label>
     <div class="check"></div>
@@ -244,17 +239,6 @@ function steepestAscentHillClimbing(){
 	var res = null;
 	var xmlhttp = new XMLHttpRequest();
 	xmlhttp.open("GET", "./data/SAHC.json", false);
-	xmlhttp.send();
-	if (xmlhttp.status==200) {
-		res = xmlhttp.responseText;
-	}
-	var inp = JSON.parse(res);
-	drawInitial(inp)
-}
-function simulatedAnnealing(){
-	var res = null;
-	var xmlhttp = new XMLHttpRequest();
-	xmlhttp.open("GET", "./data/SA.json", false);
 	xmlhttp.send();
 	if (xmlhttp.status==200) {
 		res = xmlhttp.responseText;
