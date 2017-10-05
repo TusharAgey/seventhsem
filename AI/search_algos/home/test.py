@@ -40,11 +40,13 @@ def AStar(eh, N, heuristics, start, goal):
 			for x in myElem:
 				cpy.append(x)
 			#print myElem
-			#cpy[1] = cpy[1] + heuristics[ord(child) - ord('A')] + eh[ord(cpy[0][len(cpy[0]) - 1]) - ord('A')][ord(child) - ord('A')]
+			cpy[1] = cpy[1] + heuristics[ord(child) - ord('A')] + eh[ord(cpy[0][len(cpy[0]) - 1]) - ord('A')][ord(child) - ord('A')]
 			cpy[0].append(child)
 			#print cpy
 			opened.append(cpy)
-		break
+		x = opened[j]
+		opened.remove(j)
+		closed.append(x)
 		#print opened
 		#nextBest is the element to be processed further
 		#get childrens of element in opened.

@@ -121,5 +121,5 @@ i = 0
 
 finalPath['path'] = AStar(eh, data['N'])
 print finalPath['path']
-with open('./data/A.json', 'w') as fp:
+with open('./data/AStar.json', 'w') as fp:
     json.dump(finalPath, fp)
