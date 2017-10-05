@@ -1,5 +1,3 @@
-
-
 import json
 def findChildrensAndGiveMyDistances(elem, opened, eh): #finds childrens and returns distances & add childrens to opened
 	elemList = eh[ord(elem) - ord('A')]
@@ -120,9 +118,7 @@ for elem in data['heuristics']:
 	heuristicVals.append(elem.values()[0])
 eh = data['edges']
 i = 0
-for elem in heuristicVals:
-	eh[i][i] = elem
-	i += 1
+
 finalPath['path'] = AStar(eh, data['N'])
 print finalPath['path']
 with open('./data/A.json', 'w') as fp:
