@@ -45,7 +45,7 @@ class SA{
             System.out.print(t);
     }
     public static int heat(int rt){
-         rt = rt + 300;
+         rt = rt + 30;
         return rt;
     }
     public static int cool(int rt){
