@@ -191,36 +191,8 @@ class PrivateKey(namedtuple('PrivateKey', 'n d')):
         """
         return pow(x, self.d, self.n)
 
-
-if __name__ == '__main__':
-    # Test with known results.
-    public = PublicKey(n=2534665157, e=7)
-    private = PrivateKey(n=2534665157, d=1810402843)
-
-    assert public.encrypt(123) == 2463995467
-    assert public.encrypt(456) == 2022084991
-    assert public.encrypt(123456) == 1299565302
-
-    assert private.decrypt(2463995467) == 123
-    assert private.decrypt(2022084991) == 456
-    assert private.decrypt(1299565302) == 123456
-
-    # Test with random values.
-    for length in range(4, 17):
-        public, private = make_key_pair(length)
-
-        assert public.n == private.n
-        assert len(bin(public.n)) - 2 == length
-
-        x = random.randrange(public.n - 2)
-        y = public.encrypt(x)
-        assert private.decrypt(y) == x
-
-        assert public.encrypt(public.n - 1) == public.n - 1
-        assert public.encrypt(public.n) == 0
-
-        assert private.decrypt(public.n - 1) == public.n - 1
-        assert private.decrypt(public.n) == 0
-
-    import doctest
-    doctest.testfile(__file__, globs=globals())
+public_key, private_key = make_key_pair(26)
+message = 123412
+encrypted_message = public_key.encrypt(message)
+print encrypted_message
+print private_key.decrypt(encrypted_message)

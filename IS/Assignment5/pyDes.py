@@ -37,8 +37,8 @@ from pyDes import *
 data = "Please encrypt my string"
 k = des("DESCRYPT", " ", CBC, "\0\0\0\0\0\0\0\0")
 d = k.encrypt(data)
-print "Encypted string: " + d
-print "Decypted string: " + k.decrypt(d)
+#print "Encypted string: " + d
+#print "Decypted string: " + k.decrypt(d)
 
 See the module source (pyDes.py) for more examples of use.
 You can slo run the pyDes.py file without and arguments to see a simple test.
@@ -408,7 +408,7 @@ class des:
 				raise ValueError("Invalid data length, data must be a multiple of " + str(self.block_size) + " bytes\n. Try setting the optional padding character")
 			else:
 				data += (self.block_size - (len(data) % self.block_size)) * self.getPadding()
-			# print "Len of data: %f" % (len(data) / self.block_size)
+			# #print "Len of data: %f" % (len(data) / self.block_size)
 
 		if self.getMode() == CBC:
 			if self.getIV():
@@ -426,7 +426,7 @@ class des:
 			# Test code for caching encryption results
 			#lines += 1
 			#if dict.has_key(data[i:i+8]):
-				#print "Cached result for: %s" % data[i:i+8]
+				##print "Cached result for: %s" % data[i:i+8]
 			#	cached += 1
 			#	result.append(dict[data[i:i+8]])
 			#	i += 8
@@ -465,11 +465,11 @@ class des:
 			#dict[data[i:i+8]] = d
 			i += 8
 
-		# print "Lines: %d, cached: %d" % (lines, cached)
+		# #print "Lines: %d, cached: %d" % (lines, cached)
 
 		# Remove the padding from the last block
 		if crypt_type == des.DECRYPT and self.getPadding():
-			#print "Removing decrypt pad"
+			##print "Removing decrypt pad"
 			s = result[-1]
 			while s[-1] == self.getPadding():
 				s = s[:-1]
@@ -668,43 +668,43 @@ def example_triple_des():
 	from binascii import unhexlify as unhex
 
 	# example shows triple-des encryption using the des class
-	print "Example of triple DES encryption in default ECB mode (DES-EDE3)\n"
+	#print "Example of triple DES encryption in default ECB mode (DES-EDE3)\n"
 
-	print "Triple des using the des class (3 times)"
+	#print "Triple des using the des class (3 times)"
 	t = time()
-	k1 = des(unhex("133457799BBCDFF1"))
-	k2 = des(unhex("1122334455667788"))
-	k3 = des(unhex("77661100DD223311"))
-	d = "Triple DES test string, to be encrypted and decrypted..."
-	print "Key1:      %s" % k1.getKey()
-	print "Key2:      %s" % k2.getKey()
-	print "Key3:      %s" % k3.getKey()
-	print "Data:      %s" % d
+	k1 = des(open("./key/8Key", "r").read())
+	k2 = des(open("./key/8Key", "r").read())
+	k3 = des(open("./key/8Key", "r").read())
+	d = open("./text/10240Text", "r").read()
+	#print "Key1:      %s" % k1.getKey()
+	#print "Key2:      %s" % k2.getKey()
+	#print "Key3:      %s" % k3.getKey()
+	#print "Data:      %s" % d
 
 	e1 = k1.encrypt(d)
 	e2 = k2.decrypt(e1)
 	e3 = k3.encrypt(e2)
-	print "Encrypted: " + e3
+	#print "Encrypted: " + e3
 
 	d3 = k3.decrypt(e3)
 	d2 = k2.encrypt(d3)
 	d1 = k1.decrypt(d2)
-	print "Decrypted: " + d1
-	print "DES time taken: %f (%d crypt operations)" % (time() - t, 6 * (len(d) / 8))
-	print ""
+	#print "Decrypted: " + d1
+	#print "DES time taken: %f (%d crypt operations)" % (time() - t, 6 * (len(d) / 8))
+	#print ""
 
 	# Example below uses the triple-des class to achieve the same as above
-	print "Now using triple des class"
+	#print "Now using triple des class"
 	t = time()
 	t1 = triple_des(unhex("133457799BBCDFF1112233445566778877661100DD223311"))
-	print "Key:       %s" % t1.getKey()
-	print "Data:      %s" % d
+	#print "Key:       %s" % t1.getKey()
+	#print "Data:      %s" % d
 
 	td1 = t1.encrypt(d)
-	print "Encrypted: " + td1
+	#print "Encrypted: " + td1
 
 	td2 = t1.decrypt(td1)
-	print "Decrypted: " + td2
+	#print "Decrypted: " + td2
 
 	print "Triple DES time taken: %f (%d crypt operations)" % (time() - t, 6 * (len(d) / 8))
 
@@ -712,20 +712,20 @@ def example_des():
 	from time import time
 
 	# example of DES encrypting in CBC mode with the IV of "\0\0\0\0\0\0\0\0"
-	print "Example of DES encryption using CBC mode\n"
+	#print "Example of DES encryption using CBC mode\n"
 	t = time()
 	k = des("DESCRYPT", CBC, "\0\0\0\0\0\0\0\0")
 	data = "DES encryption algorithm"
-	print "Key      : " + k.getKey()
-	print "Data     : " + data
+	#print "Key      : " + k.getKey()
+	#print "Data     : " + data
 
 	d = k.encrypt(data)
-	print "Encrypted: " + d
+	#print "Encrypted: " + d
 
 	d = k.decrypt(d)
-	print "Decrypted: " + d
-	print "DES time taken: %f (6 crypt operations)" % (time() - t)
-	print ""
+	#print "Decrypted: " + d
+	#print "DES time taken: %f (6 crypt operations)" % (time() - t)
+	#print ""
 
 def __test__():
 	example_des()
@@ -738,7 +738,7 @@ def __fulltest__():
 	from binascii import hexlify as dohex
 
 	__test__()
-	print ""
+	#print ""
 
 	k = des("\0\0\0\0\0\0\0\0", CBC, "\0\0\0\0\0\0\0\0")
 	d = k.encrypt("DES encryption algorithm")
@@ -792,7 +792,7 @@ def __filetest__():
 	f = open("pyDes.py.dec", "wb+")
 	f.write(d)
 	f.close()
-	print "DES file test time: %f" % (time() - t)
+	#print "DES file test time: %f" % (time() - t)
 	
 def __profile__():
 	import profile

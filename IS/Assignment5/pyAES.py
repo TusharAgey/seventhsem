@@ -651,15 +651,20 @@ def generateRandomKey(keysize):
 
 def testStr(cleartext, keysize=16, modeName = "CBC"):
     '''Test with random key, choice of mode.'''
-    print 'Random key test', 'Mode:', modeName
-    print 'cleartext:', cleartext
+    #print 'Random key test', 'Mode:', modeName
+    #print 'cleartext:', cleartext
     key =  generateRandomKey(keysize)
-    print 'Key:', [ord(x) for x in key]
+    #print 'Key:', [ord(x) for x in key]
     mode = AESModeOfOperation.modeOfOperation[modeName]
+    #read a file
+    cleartext = open("./text/10240Text", "r").read()
+
+    #read a file
+    key = open("./key/16Key", "r").read()
     cipher = encryptData(key, cleartext, mode)
-    print 'Cipher:', [ord(x) for x in cipher]
+    #print 'Cipher:', [ord(x) for x in cipher]
     decr = decryptData(key, cipher, mode)
-    print 'Decrypted:', decr
+    #print 'Decrypted:', decr
     
     
 if __name__ == "__main__":
@@ -669,10 +674,10 @@ if __name__ == "__main__":
     iv = [103,35,148,239,76,213,47,118,255,222,123,176,106,134,98,92]
     mode, orig_len, ciph = moo.encrypt(cleartext, moo.modeOfOperation["CBC"],
             cypherkey, moo.aes.keySize["SIZE_128"], iv)
-    print 'm=%s, ol=%s (%s), ciph=%s' % (mode, orig_len, len(cleartext), ciph)
+    #print 'm=%s, ol=%s (%s), ciph=%s' % (mode, orig_len, len(cleartext), ciph)
     decr = moo.decrypt(ciph, orig_len, mode, cypherkey,
             moo.aes.keySize["SIZE_128"], iv)
-    print decr
+    #print decr
     testStr(cleartext, 16, "CBC")
     
 
