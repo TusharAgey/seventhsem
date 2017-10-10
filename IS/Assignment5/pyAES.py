@@ -660,7 +660,7 @@ def testStr(cleartext, keysize=16, modeName = "CBC"):
     cleartext = open("./text/10240Text", "r").read()
 
     #read a file
-    key = open("./key/16Key", "r").read()
+    key = open("./key/32Key", "r").read()
     cipher = encryptData(key, cleartext, mode)
     #print 'Cipher:', [ord(x) for x in cipher]
     decr = decryptData(key, cipher, mode)

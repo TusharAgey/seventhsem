@@ -672,9 +672,9 @@ def example_triple_des():
 
 	#print "Triple des using the des class (3 times)"
 	t = time()
-	k1 = des(open("./key/8Key", "r").read())
-	k2 = des(open("./key/8Key", "r").read())
-	k3 = des(open("./key/8Key", "r").read())
+	k1 = des(open("./key/16Key", "r").read())
+	k2 = des(open("./key/16Key", "r").read())
+	k3 = des(open("./key/16Key", "r").read())
 	d = open("./text/10240Text", "r").read()
 	#print "Key1:      %s" % k1.getKey()
 	#print "Key2:      %s" % k2.getKey()
