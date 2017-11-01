@@ -657,10 +657,10 @@ def testStr(cleartext, keysize=16, modeName = "CBC"):
     #print 'Key:', [ord(x) for x in key]
     mode = AESModeOfOperation.modeOfOperation[modeName]
     #read a file
-    cleartext = open("./text/10240Text", "r").read()
+    cleartext = open("./text/8Text", "r").read()
 
     #read a file
-    key = open("./key/32Key", "r").read()
+    key = open("./key/16Key", "r").read()
     cipher = encryptData(key, cleartext, mode)
     #print 'Cipher:', [ord(x) for x in cipher]
     decr = decryptData(key, cipher, mode)
