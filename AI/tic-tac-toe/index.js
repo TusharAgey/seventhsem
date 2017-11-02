@@ -10,29 +10,162 @@ canvas.width = canvasSize;
 canvas.height = canvasSize;
 context.translate(0.5, 0.5);
 var visited = [[0,0,0],[0,0,0],[0,0,0]]; //Master record of elements
+function hasFreeMoves(visited){
+	for(var i = 0; i < 3; i++){
+		for(var j = 0; j < 3; j++){
+			if(visited[i][i] == 0)
+				return true;
+		}
+	}
+}
+
+function minmax(vis, depth, isMax){
+	if (hasFreeMoves(visited)==false)
+		return 0;
+	// If this maximizer's move
+	var player;
+	var best;
+	if (isMax){
+		player = 'o';
+		best = -1000;
+	}
+	else{
+		best = 1000
+		player = 'x'
+	}
+	for (var i = 0; i<3; i++){
+		for (var j = 0; j<3; j++){
+ 			if (vis[i][j]==0){
+				vis[i][j] = player;
+				//Now Call minimax recursively and choose the suitable value
+				best = Math.max( best, minmax(vis, depth+1, !isMax) );
+				// Undo the move
+				vis[i][j] = 0;
+			}
+		}
+	}
+    return best;
+}
 function nextMove(){//The actual method that determines the next system move
-	var myvisited = [0,0,0,0,0,0,0,0,0];
+	var myvisited = [[0,0,0],[0,0,0],[0,0,0]];
 	var i = 0;
 	for (var x = 0;x < 3;x++) {
   	  for (var y = 0;y < 3;y++) {
-  	  	myvisited[i] = visited[x][y];
-  	  	i++;
+  	  	myvisited[x][y] = visited[x][y]; //creating a temporary copy of this array
   	  }
   	}
-  	//do all the AI processing
-	//logic to choose next move
-	//just find lok. and paint the box of x,y when i == lok
-	i = 0;
-outer:	for (x = 0; x < 3; x++) {
-  	  for (y = 0; y < 3; y++) {
-  	  	if(myvisited[i] == 0){
-  	  		visited[x][y] = 'x';
-  	  		break outer;
-  	  	}
-  	  	i++;
-  	  }
+	for (var row = 0; row<3; row++){ //If next user's move is winning move
+		if (myvisited[row][0]==myvisited[row][1] && myvisited[row][2] == 0){
+			if(myvisited[row][0] == 'o'){
+				visited[row][2] = 'x';
+				drawX(row * sectionSize, 2 * sectionSize);
+				return;
+			}
+  		}
+  		else if (myvisited[0][row]==myvisited[1][row] && myvisited[2][row] == 0){
+			if(myvisited[0][row] == 'o'){
+				visited[2][row] = 'x';
+				drawX(2 * sectionSize, row * sectionSize);
+				return;
+			}
+  		}
+  		else if (myvisited[row][1]==myvisited[row][2] && myvisited[row][0] == 0){
+			if(myvisited[row][1] == 'o'){
+				visited[row][0] = 'x';
+				drawX(row * sectionSize, 0 * sectionSize);
+				return;
+			}
+  		}
+  		else if (myvisited[1][row]==myvisited[2][row] && myvisited[0][row] == 0){
+			if(myvisited[1][row] == 'o'){
+				visited[0][row] = 'x';
+				drawX(0 * sectionSize, row * sectionSize);
+				return;
+			}
+  		}
+  		else if (myvisited[0][row]==myvisited[2][row] && myvisited[1][row] == 0){
+			if(myvisited[0][row] == 'o'){
+				visited[1][row] = 'x';
+				drawX(1 * sectionSize, row * sectionSize);
+				return;
+			}
+  		}
+
+  		else if (myvisited[row][0]==myvisited[row][2] && myvisited[row][1] == 0){
+			if(myvisited[row][0] == 'o'){
+				visited[row][1] = 'x';
+				drawX(row * sectionSize, 1 * sectionSize);
+				return;
+			}
+  		}
   	}
-	drawX(x * sectionSize, y * sectionSize);
+
+	if(myvisited[0][0]=='o' && myvisited[1][1] == 'o' && myvisited[2][2] == 0){
+		visited[2][2] = 'x';
+		drawX(2 * sectionSize, 2 * sectionSize);
+		return;
+	}
+	else if(myvisited[1][1]=='o' && myvisited[2][2] == 'o' && myvisited[0][0] == 0){
+		visited[0][0] = 'x';
+		drawX(0 * sectionSize, 0 * sectionSize);
+		return;
+	}
+	else if(myvisited[2][0]=='o' && myvisited[1][1] == 'o' && myvisited[0][2] == 0){
+		visited[0][2] = 'x';
+		drawX(0 * sectionSize, 2 * sectionSize);
+		return;
+	}
+	else if(myvisited[0][2]=='o' && myvisited[1][1] == 'o' && myvisited[2][0] == 0){
+		visited[2][0] = 'x';
+		drawX(2 * sectionSize, 0 * sectionSize);
+		return;
+	}
+	else if(myvisited[0][0]=='o' && myvisited[2][2] == 'o' && myvisited[1][1] == 0){
+		visited[1][1] = 'x';
+		drawX(1 * sectionSize, 1 * sectionSize);
+		return;
+	}
+	else if(myvisited[0][2]=='o' && myvisited[2][0] == 'o' && myvisited[1][1] == 0){
+		visited[1][1] = 'x';
+		drawX(1 * sectionSize, 1 * sectionSize);
+		return;
+	}
+	else if(myvisited[0][1]=='o' && myvisited[2][1] == 'o' && myvisited[1][1] == 0){
+		visited[1][1] = 'x';
+		drawX(1 * sectionSize, 1 * sectionSize);
+		return;
+	}
+	else if(myvisited[1][0]=='o' && myvisited[1][2] == 'o' && myvisited[1][1] == 0){
+		visited[1][1] = 'x';
+		drawX(1 * sectionSize, 1 * sectionSize);
+		return;
+	}
+	var currBestVal = -9999, moveVal = 0;
+	var bestMove = {
+		"row" : -1,
+		"col" : -1
+ 	};
+    //This Traverses all the cells, evalutae minimax function for all empty cells. And return the cell with optimal value.
+	for (var i = 0; i<3; i++){
+		for(var j = 0; j<3; j++){
+			if (myvisited[i][j]==0){ //If the cell is free
+				// Make the move
+				myvisited[i][j] = 'o';
+				// compute evaluation function for this move.
+				moveVal = minmax(myvisited, 0, false);
+				// Undo the move
+				myvisited[i][j] = 0;
+				// If the value of the current move is more than the best value, then update best
+				if(moveVal > currBestVal){
+					bestMove.row = i;
+					bestMove.col = j;
+					currBestVal = moveVal;
+                }
+            }
+        }
+    }
+  	visited[bestMove.row][bestMove.col] = 'x';
+	drawX(bestMove.row * sectionSize, bestMove.col * sectionSize);
 }
 function addPlayingPiece (mouse) { //When user clicks an area, paint the area 
   var xCordinate;
