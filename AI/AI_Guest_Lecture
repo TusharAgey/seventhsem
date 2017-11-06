@@ -1,0 +1,46 @@
+1st 2 neural nets came out in ADALINE and MADALINE from Stanford.
+Linear Regression
+Feed FOrward Neural Network: Made of many perceptrons. Used for regression and classification problems. Connections have no cycles. Information only goes forward.
+y=mx+b
+y=output neuron
+x=input neuron
+m=weight value
+b=biased value
+
+z=f(b+x.w) = f(b + sum(xi.wi))
+
+Feed Forward Neural Network for 2 classes.
+
+
+*)Loss: After the outputs are calculated, the loss is computed based on the computed output and the expected output. This loss is use dt ocalculate the gradients for the weight matrices so that they can be updated during the backward pass.
+
+L(y, y^) = -ylogy^ - (1-y)log(1-y^)  (cross entropy loss function)
+
+Gradient Update:
+The loss needs to be minimised. SGD, RMSProp, Adam etc.
+
+1 EPOC : 1 iteration over data with optimizer like SGD.
+
+overfitting(not good) = (memorizing the training data)(which is obviously bad).
+underfitting(doesn't learn data at all).
+
+
+
+**)Reccurrent Neural Networks:(for predictions)
+Time is an important entity.
+ot = xst + st-1w
+
+**LSTM : ( Long Short Term Memory)
+
+RNNs can recognise sequences. Signals travel in more than one
+
+CNN, GRU (various other neural nets)
+
+DeepMind:
+DeepDream
+Google uses neural networks for text to speech with near human accuracy. Translation on Facebook happens with neural networks(CNNs) AlphaGo Zero
+
+Text Generation using Neural Networks and Python:
+Generator and Descriminator
+Generator generats noise
+discriminator: Tries differenciation between the real data and noise data.	
